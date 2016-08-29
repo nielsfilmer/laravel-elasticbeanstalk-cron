@@ -29,9 +29,9 @@ class ConfigureLeaderCommand extends Command
     {
         parent::__construct();
         $client         = new Ec2Client([
-                                            'region'  => 'us-east-1',
-                                            'version' => 'latest'
-                                        ]);
+            'region'  => getenv('AWS_REGION'),
+            'version' => 'latest'
+        ]);
         $this->ecClient = $client;
     }
 
@@ -55,7 +55,7 @@ class ConfigureLeaderCommand extends Command
                      'Values' => [$result]
                     ]
                 ]
-                                                                   ])->get('Reservations')[0]['Instances'][0]['Tags'];
+                ])->get('Reservations')[0]['Instances'][0]['Tags'];
 
                 // Get environment name
                 $environmentName = F\first($tags, function ($tagArray) {
@@ -71,7 +71,7 @@ class ConfigureLeaderCommand extends Command
                      'Values' => [$environmentName]
                     ]
                 ]
-                                                                ]);
+                ]);
                 $instances = F\map($info->get('Reservations'), function ($i) {
                     return current($i['Instances']);
                 });
@@ -92,7 +92,7 @@ class ConfigureLeaderCommand extends Command
                         })[0];
                     } else {
                         $this->info('Only one instance running...');
-                        $oldestInstance = $candidateInstances[0];
+                        $oldestInstance = array_pop($candidateInstances);
                     }
                     if ($oldestInstance['InstanceId'] == $result) { // if this instance is the oldest instance it's the leader
                         $leader = true;
