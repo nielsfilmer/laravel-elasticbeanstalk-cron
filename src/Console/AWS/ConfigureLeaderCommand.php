@@ -23,20 +23,21 @@ class ConfigureLeaderCommand extends Command
      */
     protected $description = 'Configure leader ec2 instance';
 
+    /**
+     * @var Ec2Client
+     */
     protected $ecClient;
 
-    public function __construct()
-    {
-        parent::__construct();
-        $client         = new Ec2Client([
-            'region'  => getenv('AWS_REGION'),
-            'version' => 'latest'
-        ]);
-        $this->ecClient = $client;
-    }
 
     public function handle()
     {
+        $client         = new Ec2Client([
+            'region'  => getenv('AWS_REGION', 'eu-west-1'),
+            'version' => 'latest'
+        ]);
+        $this->ecClient = $client;
+
+
         $this->info('Initializing Leader Selection...');
 
         // Only do cron setup if environment is configured to use it (This way we don't accidentally run on workers)

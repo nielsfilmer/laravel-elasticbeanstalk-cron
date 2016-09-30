@@ -44,7 +44,10 @@ class SetupSchedulerCommand extends Command
         } else {
             // using opt..envvars makes sure that environmental variables are loaded before we run artisan
             // http://georgebohnisch.com/laravel-task-scheduling-working-aws-elastic-beanstalk-cron/
-            file_put_contents('/tmp/crontab.txt', $output . '* * * * * . /opt/elasticbeanstalk/support/envvars && /usr/bin/php /var/app/current/artisan schedule:run >> /dev/null 2>&1' . PHP_EOL);
+
+            $artisan_path = env('AWS_ARTISAN_PATH', "/var/app/current/artisan");
+
+            file_put_contents('/tmp/crontab.txt', $output . "* * * * * . /opt/elasticbeanstalk/support/envvars && /usr/bin/php {$artisan_path} schedule:run >> /dev/null 2>&1" . PHP_EOL);
             echo exec('crontab /tmp/crontab.txt');
         }
 
