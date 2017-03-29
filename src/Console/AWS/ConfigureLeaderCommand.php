@@ -32,7 +32,7 @@ class ConfigureLeaderCommand extends Command
     public function handle()
     {
         $client         = new Ec2Client([
-            'region'  => getenv('AWS_REGION', 'eu-west-1'),
+            'region'  => getenv('AWS_REGION' ),
             'version' => 'latest'
         ]);
         $this->ecClient = $client;
