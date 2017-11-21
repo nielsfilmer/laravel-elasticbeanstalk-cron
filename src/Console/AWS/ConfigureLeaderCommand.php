@@ -33,7 +33,11 @@ class ConfigureLeaderCommand extends Command
     {
         $client         = new Ec2Client([
             'region'  => getenv('AWS_REGION' ),
-            'version' => 'latest'
+            'version' => 'latest',
+            'credentials' => [
+                'key'    => getenv('AWS_KEY' ),
+                'secret' => getenv('AWS_SECRET' ),
+            ]
         ]);
         $this->ecClient = $client;
 
